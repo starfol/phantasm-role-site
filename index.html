@@ -4,192 +4,181 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Phantasm Role - Редактор сюжета</title>
-  <script src="https://cdn.jsdelivr.net/npm/leader-line@1.0.7/leader-line.min.js"></script>
   <style>
-    body { margin: 0; font-family: system-ui; background: #0a0a0a; color: #fff; overflow: hidden; }
+    body { 
+      margin: 0; 
+      font-family: system-ui; 
+      background: #0a0a0a; 
+      color: #fff; 
+    }
     #toolbar { 
       padding: 15px; 
       background: #1a1a2e; 
       display: flex; 
-      gap: 10px; 
+      gap: 12px; 
       flex-wrap: wrap; 
       align-items: center;
       border-bottom: 1px solid #333;
-      z-index: 100;
     }
     button { 
-      padding: 10px 16px; 
+      padding: 10px 18px; 
       background: #6b1b6b; 
       color: white; 
       border: none; 
       border-radius: 6px; 
       cursor: pointer; 
-      font-size: 14px;
+      font-size: 15px;
     }
     button:hover { background: #8b2b8b; }
-    .node { 
-      position: absolute; 
-      width: 210px; 
-      padding: 12px; 
-      background: #1e1e2e; 
-      border: 2px solid #c026d3; 
-      border-radius: 8px; 
-      cursor: move; 
-      user-select: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    .timeline {
+      display: flex;
+      gap: 20px;
+      padding: 30px;
+      overflow-x: auto;
+      min-height: calc(100vh - 70px);
+      background: #111;
     }
-    .node input, .node textarea {
+    .tile {
+      background: #1e1e2e;
+      border: 2px solid #c026d3;
+      border-radius: 10px;
+      width: 240px;
+      padding: 16px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    .tile-header {
+      font-weight: bold;
+      color: #c026d3;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+    .tile input, .tile textarea {
       width: 100%;
       background: #2a2a3a;
       border: 1px solid #555;
       color: #fff;
+      padding: 8px;
+      border-radius: 6px;
       margin-top: 8px;
-      border-radius: 4px;
-      padding: 6px;
-      font-size: 14px;
     }
-    .node textarea { height: 80px; resize: vertical; }
-    .node-header {
-      font-weight: bold;
-      margin-bottom: 6px;
-      color: #c026d3;
+    .tile textarea { height: 100px; resize: vertical; }
+    .delete-btn {
+      margin-top: 10px;
+      background: #991b1b;
+      padding: 6px 12px;
+      font-size: 13px;
     }
   </style>
 </head>
 <body>
 
   <div id="toolbar">
-    <h1 style="margin: 0 20px 0 0; font-size: 1.6rem;">Phantasm Role</h1>
-    <button onclick="addNode('character')">+ Персонаж</button>
-    <button onclick="addNode('event')">+ Событие</button>
-    <button onclick="saveStory()">💾 Сохранить сюжет</button>
-    <button onclick="loadStory()">📂 Загрузить сюжет</button>
+    <h1 style="margin: 0 20px 0 0;">Phantasm Role — Хронология сюжета</h1>
+    <button onclick="addTile('character')">+ Персонаж</button>
+    <button onclick="addTile('event')">+ Событие</button>
+    <button onclick="saveStory()">💾 Сохранить</button>
+    <button onclick="loadStory()">📂 Загрузить</button>
     <button onclick="clearAll()" style="background:#991b1b;">Очистить всё</button>
   </div>
 
-  <div id="canvas" class="canvas" style="position: relative; width: 100vw; height: calc(100vh - 60px); overflow: hidden; background: #111;"></div>
+  <div id="timeline" class="timeline"></div>
 
   <script>
-    let nodes = [];
+    let tiles = [];
 
-    function addNode(type) {
-      const node = document.createElement('div');
-      node.className = 'node';
-      node.style.left = (Math.random() * 500 + 150) + 'px';
-      node.style.top = (Math.random() * 300 + 150) + 'px';
-
+    function addTile(type) {
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      
       if (type === 'character') {
-        node.innerHTML = `
-          <div class="node-header">👤 Персонаж</div>
+        tile.innerHTML = `
+          <div class="tile-header">👤 Персонаж</div>
           <input type="text" placeholder="Имя персонажа" value="Новый персонаж">
         `;
       } else {
-        node.innerHTML = `
-          <div class="node-header">📖 Событие</div>
-          <textarea placeholder="Опишите событие...">Новое событие</textarea>
+        tile.innerHTML = `
+          <div class="tile-header">📖 Событие</div>
+          <textarea placeholder="Описание события...">Новое событие</textarea>
         `;
       }
 
-      node.onmousedown = dragStart;
-      document.getElementById('canvas').appendChild(node);
-      nodes.push(node);
+      tile.innerHTML += `<button class="delete-btn" onclick="deleteTile(this)">Удалить</button>`;
+      document.getElementById('timeline').appendChild(tile);
+      tiles.push(tile);
     }
 
-    // Перетаскивание
-    let draggedNode = null;
-    let offsetX, offsetY;
-
-    function dragStart(e) {
-      draggedNode = this;
-      offsetX = e.clientX - this.getBoundingClientRect().left;
-      offsetY = e.clientY - this.getBoundingClientRect().top;
-      document.onmousemove = drag;
-      document.onmouseup = stopDrag;
+    function deleteTile(btn) {
+      const tile = btn.parentElement;
+      tile.remove();
+      tiles = tiles.filter(t => t !== tile);
     }
 
-    function drag(e) {
-      if (!draggedNode) return;
-      draggedNode.style.left = (e.clientX - offsetX) + 'px';
-      draggedNode.style.top = (e.clientY - offsetY) + 'px';
-    }
-
-    function stopDrag() {
-      document.onmousemove = null;
-      document.onmouseup = null;
-      draggedNode = null;
-    }
-
-    // === Сохранение ===
     function saveStory() {
-      const data = nodes.map(node => {
-        const input = node.querySelector('input');
-        const textarea = node.querySelector('textarea');
+      const data = tiles.map(tile => {
+        const input = tile.querySelector('input');
+        const textarea = tile.querySelector('textarea');
         return {
-          left: node.style.left,
-          top: node.style.top,
           type: input ? 'character' : 'event',
           value: input ? input.value : (textarea ? textarea.value : '')
         };
       });
 
-      localStorage.setItem('phantasmStory', JSON.stringify(data));
-      alert('✅ Сюжет успешно сохранён!');
+      localStorage.setItem('phantasmTimeline', JSON.stringify(data));
+      alert('✅ Хронология сюжета сохранена!');
     }
 
-    // === Загрузка ===
     function loadStory() {
-      const saved = localStorage.getItem('phantasmStory');
+      const saved = localStorage.getItem('phantasmTimeline');
       if (!saved) {
         alert('Нет сохранённых сюжетов');
         return;
       }
 
       const data = JSON.parse(saved);
-      const canvas = document.getElementById('canvas');
-      canvas.innerHTML = '';
-      nodes = [];
+      const timeline = document.getElementById('timeline');
+      timeline.innerHTML = '';
+      tiles = [];
 
       data.forEach(item => {
-        const node = document.createElement('div');
-        node.className = 'node';
-        node.style.left = item.left;
-        node.style.top = item.top;
+        const tile = document.createElement('div');
+        tile.className = 'tile';
 
         if (item.type === 'character') {
-          node.innerHTML = `
-            <div class="node-header">👤 Персонаж</div>
-            <input type="text" value="${item.value || 'Новый персонаж'}">
+          tile.innerHTML = `
+            <div class="tile-header">👤 Персонаж</div>
+            <input type="text" value="${item.value || 'Персонаж'}">
           `;
         } else {
-          node.innerHTML = `
-            <div class="node-header">📖 Событие</div>
-            <textarea>${item.value || 'Новое событие'}</textarea>
+          tile.innerHTML = `
+            <div class="tile-header">📖 Событие</div>
+            <textarea>${item.value || 'Событие'}</textarea>
           `;
         }
 
-        node.onmousedown = dragStart;
-        canvas.appendChild(node);
-        nodes.push(node);
+        tile.innerHTML += `<button class="delete-btn" onclick="deleteTile(this)">Удалить</button>`;
+        timeline.appendChild(tile);
+        tiles.push(tile);
       });
 
-      alert('✅ Сюжет загружен!');
+      alert('✅ Хронология загружена!');
     }
 
     function clearAll() {
-      if (confirm('Очистить весь сюжет?')) {
-        document.getElementById('canvas').innerHTML = '';
-        nodes = [];
-        localStorage.removeItem('phantasmStory');
+      if (confirm('Очистить всю хронологию?')) {
+        document.getElementById('timeline').innerHTML = '';
+        tiles = [];
+        localStorage.removeItem('phantasmTimeline');
       }
     }
 
     // Инициализация
     window.onload = () => {
-      if (localStorage.getItem('phantasmStory')) {
+      if (localStorage.getItem('phantasmTimeline')) {
         loadStory();
       } else {
-        addNode('character');
-        addNode('event');
+        addTile('character');
+        addTile('event');
       }
     };
   </script>
