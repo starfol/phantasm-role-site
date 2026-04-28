@@ -119,16 +119,16 @@
       draggedNode = null;
     }
 
-    // Сохранение
+    // === Сохранение ===
     function saveStory() {
       const data = nodes.map(node => {
-        const inputs = node.querySelectorAll('input, textarea');
-        const content = Array.from(inputs).map(el => el.value || el.placeholder).join(' | ');
+        const input = node.querySelector('input');
+        const textarea = node.querySelector('textarea');
         return {
           left: node.style.left,
           top: node.style.top,
-          type: node.querySelector('input') ? 'character' : 'event',
-          content: content
+          type: input ? 'character' : 'event',
+          value: input ? input.value : (textarea ? textarea.value : '')
         };
       });
 
@@ -136,7 +136,7 @@
       alert('✅ Сюжет успешно сохранён!');
     }
 
-    // Загрузка
+    // === Загрузка ===
     function loadStory() {
       const saved = localStorage.getItem('phantasmStory');
       if (!saved) {
@@ -158,12 +158,12 @@
         if (item.type === 'character') {
           node.innerHTML = `
             <div class="node-header">👤 Персонаж</div>
-            <input type="text" value="${item.content || 'Персонаж'}">
+            <input type="text" value="${item.value || 'Новый персонаж'}">
           `;
         } else {
           node.innerHTML = `
             <div class="node-header">📖 Событие</div>
-            <textarea>${item.content || 'Событие'}</textarea>
+            <textarea>${item.value || 'Новое событие'}</textarea>
           `;
         }
 
