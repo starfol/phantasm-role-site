@@ -1,13 +1,116 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>phantasm-role</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phantasm Role - Редактор сюжета</title>
+  <script src="https://cdn.jsdelivr.net/npm/leader-line@1.0.7/leader-line.min.js"></script>
+  <style>
+    body { margin: 0; font-family: system-ui; background: #0a0a0a; color: #fff; }
+    #toolbar { padding: 15px; background: #1a1a2e; display: flex; gap: 10px; flex-wrap: wrap; }
+    button { padding: 10px 16px; background: #6b1b6b; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    .node { 
+      position: absolute; 
+      width: 180px; 
+      padding: 12px; 
+      background: #1e1e2e; 
+      border: 2px solid #c026d3; 
+      border-radius: 8px; 
+      cursor: move; 
+      user-select: none;
+    }
+    .canvas { position: relative; width: 100vw; height: calc(100vh - 60px); overflow: hidden; background: #111; }
+  </style>
+</head>
+<body>
+
+  <div id="toolbar">
+    <h1 style="margin: 0 20px 0 0;">Phantasm Role</h1>
+    <button onclick="addNode('character')">+ Персонаж</button>
+    <button onclick="addNode('event')">+ Событие</button>
+    <button onclick="saveStory()">Сохранить сюжет</button>
+    <button onclick="loadStory()">Загрузить сюжет</button>
+  </div>
+
+  <div id="canvas" class="canvas"></div>
+
+  <script>
+    let nodes = [];
+    let lines = [];
+
+    function addNode(type) {
+      const node = document.createElement('div');
+      node.className = 'node';
+      node.style.left = Math.random() * 600 + 100 + 'px';
+      node.style.top = Math.random() * 400 + 100 + 'px';
+      node.innerHTML = type === 'character' 
+        ? '<strong>Персонаж</strong><br><input type="text" placeholder="Имя персонажа" style="width:100%; margin-top:8px;">'
+        : '<strong>Событие</strong><br><textarea placeholder="Описание события" style="width:100%; height:60px;"></textarea>';
+
+      node.onmousedown = dragStart;
+      document.getElementById('canvas').appendChild(node);
+      nodes.push(node);
+    }
+
+    let draggedNode = null;
+    let offsetX, offsetY;
+
+    function dragStart(e) {
+      draggedNode = this;
+      offsetX = e.clientX - this.getBoundingClientRect().left;
+      offsetY = e.clientY - this.getBoundingClientRect().top;
+      document.onmousemove = drag;
+      document.onmouseup = stopDrag;
+    }
+
+    function drag(e) {
+      if (!draggedNode) return;
+      draggedNode.style.left = (e.clientX - offsetX) + 'px';
+      draggedNode.style.top = (e.clientY - offsetY) + 'px';
+    }
+
+    function stopDrag() {
+      document.onmousemove = null;
+      document.onmouseup = null;
+      draggedNode = null;
+    }
+
+    function saveStory() {
+      const data = nodes.map(node => ({
+        left: node.style.left,
+        top: node.style.top,
+        html: node.innerHTML
+      }));
+      localStorage.setItem('phantasmStory', JSON.stringify(data));
+      alert('Сюжет сохранён!');
+    }
+
+    function loadStory() {
+      const data = JSON.parse(localStorage.getItem('phantasmStory') || '[]');
+      const canvas = document.getElementById('canvas');
+      canvas.innerHTML = '';
+      nodes = [];
+
+      data.forEach(item => {
+        const node = document.createElement('div');
+        node.className = 'node';
+        node.style.left = item.left;
+        node.style.top = item.top;
+        node.innerHTML = item.html;
+        node.onmousedown = dragStart;
+        canvas.appendChild(node);
+        nodes.push(node);
+      });
+    }
+
+    // Инициализация
+    window.onload = () => {
+      // Добавляем пару примеров при первом запуске
+      if (localStorage.getItem('phantasmStory') === null) {
+        addNode('character');
+        addNode('event');
+      }
+    };
+  </script>
+</body>
 </html>
