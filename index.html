@@ -15,7 +15,6 @@
       flex-wrap: wrap; 
       align-items: center;
       border-bottom: 1px solid #333;
-      position: relative;
       z-index: 100;
     }
     button { 
@@ -30,16 +29,16 @@
     button:hover { background: #8b2b8b; }
     .node { 
       position: absolute; 
-      width: 200px; 
+      width: 210px; 
       padding: 12px; 
       background: #1e1e2e; 
       border: 2px solid #c026d3; 
       border-radius: 8px; 
       cursor: move; 
       user-select: none;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
     }
-    .node textarea, .node input {
+    .node input, .node textarea {
       width: 100%;
       background: #2a2a3a;
       border: 1px solid #555;
@@ -47,14 +46,9 @@
       margin-top: 8px;
       border-radius: 4px;
       padding: 6px;
+      font-size: 14px;
     }
-    .canvas { 
-      position: relative; 
-      width: 100vw; 
-      height: calc(100vh - 60px); 
-      overflow: hidden; 
-      background: #111; 
-    }
+    .node textarea { height: 80px; resize: vertical; }
     .node-header {
       font-weight: bold;
       margin-bottom: 6px;
@@ -73,11 +67,10 @@
     <button onclick="clearAll()" style="background:#991b1b;">Очистить всё</button>
   </div>
 
-  <div id="canvas" class="canvas"></div>
+  <div id="canvas" class="canvas" style="position: relative; width: 100vw; height: calc(100vh - 60px); overflow: hidden; background: #111;"></div>
 
   <script>
     let nodes = [];
-    let lines = [];
 
     function addNode(type) {
       const node = document.createElement('div');
@@ -93,7 +86,7 @@
       } else {
         node.innerHTML = `
           <div class="node-header">📖 Событие</div>
-          <textarea placeholder="Опишите событие..." rows="3">Новое событие</textarea>
+          <textarea placeholder="Опишите событие...">Новое событие</textarea>
         `;
       }
 
@@ -102,7 +95,7 @@
       nodes.push(node);
     }
 
-    // Перетаскивание нод
+    // Перетаскивание
     let draggedNode = null;
     let offsetX, offsetY;
 
@@ -126,20 +119,24 @@
       draggedNode = null;
     }
 
-    // Сохранение сюжета
+    // Сохранение
     function saveStory() {
-      const data = nodes.map(node => ({
-        left: node.style.left,
-        top: node.style.top,
-        html: node.innerHTML,
-        type: node.querySelector('input') ? 'character' : 'event'
-      }));
+      const data = nodes.map(node => {
+        const inputs = node.querySelectorAll('input, textarea');
+        const content = Array.from(inputs).map(el => el.value || el.placeholder).join(' | ');
+        return {
+          left: node.style.left,
+          top: node.style.top,
+          type: node.querySelector('input') ? 'character' : 'event',
+          content: content
+        };
+      });
 
       localStorage.setItem('phantasmStory', JSON.stringify(data));
       alert('✅ Сюжет успешно сохранён!');
     }
 
-    // Загрузка сюжета
+    // Загрузка
     function loadStory() {
       const saved = localStorage.getItem('phantasmStory');
       if (!saved) {
@@ -157,7 +154,19 @@
         node.className = 'node';
         node.style.left = item.left;
         node.style.top = item.top;
-        node.innerHTML = item.html;
+
+        if (item.type === 'character') {
+          node.innerHTML = `
+            <div class="node-header">👤 Персонаж</div>
+            <input type="text" value="${item.content || 'Персонаж'}">
+          `;
+        } else {
+          node.innerHTML = `
+            <div class="node-header">📖 Событие</div>
+            <textarea>${item.content || 'Событие'}</textarea>
+          `;
+        }
+
         node.onmousedown = dragStart;
         canvas.appendChild(node);
         nodes.push(node);
@@ -176,11 +185,9 @@
 
     // Инициализация
     window.onload = () => {
-      // Если есть сохранённый сюжет — загружаем его
       if (localStorage.getItem('phantasmStory')) {
         loadStory();
       } else {
-        // Добавляем примеры при первом запуске
         addNode('character');
         addNode('event');
       }
