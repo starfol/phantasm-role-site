@@ -3,183 +3,139 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phantasm Role - Редактор сюжета</title>
+  <title>Phantasm Role - Редактор</title>
   <style>
-    body { 
-      margin: 0; 
-      font-family: system-ui; 
-      background: #0a0a0a; 
-      color: #fff; 
-    }
-    #toolbar { 
-      padding: 15px; 
-      background: #1a1a2e; 
-      display: flex; 
-      gap: 12px; 
-      flex-wrap: wrap; 
-      align-items: center;
-      border-bottom: 1px solid #333;
-    }
-    button { 
-      padding: 10px 18px; 
-      background: #6b1b6b; 
-      color: white; 
-      border: none; 
-      border-radius: 6px; 
-      cursor: pointer; 
-      font-size: 15px;
-    }
-    button:hover { background: #8b2b8b; }
-    .timeline {
+    body {
+      margin: 0;
+      font-family: system-ui;
+      background: #0a0a0a;
+      color: #ddd;
       display: flex;
-      gap: 20px;
-      padding: 30px;
-      overflow-x: auto;
-      min-height: calc(100vh - 70px);
+      height: 100vh;
+      overflow: hidden;
+    }
+    .sidebar {
+      width: 280px;
       background: #111;
+      border-right: 1px solid #333;
+      padding: 20px 0;
+      overflow-y: auto;
     }
-    .tile {
-      background: #1e1e2e;
-      border: 2px solid #c026d3;
-      border-radius: 10px;
-      width: 240px;
-      padding: 16px;
-      flex-shrink: 0;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    .main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      background: #0a0a0a;
     }
-    .tile-header {
-      font-weight: bold;
-      color: #c026d3;
-      margin-bottom: 10px;
-      font-size: 1.1rem;
-    }
-    .tile input, .tile textarea {
-      width: 100%;
-      background: #2a2a3a;
-      border: 1px solid #555;
-      color: #fff;
-      padding: 8px;
+    .section {
+      padding: 12px 20px;
+      cursor: pointer;
       border-radius: 6px;
-      margin-top: 8px;
+      margin: 4px 10px;
     }
-    .tile textarea { height: 100px; resize: vertical; }
-    .delete-btn {
-      margin-top: 10px;
-      background: #991b1b;
-      padding: 6px 12px;
-      font-size: 13px;
+    .section:hover {
+      background: #1f1f2e;
     }
+    .section.active {
+      background: #6b1b6b;
+      color: white;
+    }
+    h1 { margin: 0 0 30px 0; color: #fff; }
+    .card {
+      background: #1e1e2e;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #444;
+    }
+    button {
+      padding: 10px 16px;
+      background: #6b1b6b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
 
-  <div id="toolbar">
-    <h1 style="margin: 0 20px 0 0;">Phantasm Role — Хронология сюжета</h1>
-    <button onclick="addTile('character')">+ Персонаж</button>
-    <button onclick="addTile('event')">+ Событие</button>
-    <button onclick="saveStory()">💾 Сохранить</button>
-    <button onclick="loadStory()">📂 Загрузить</button>
-    <button onclick="clearAll()" style="background:#991b1b;">Очистить всё</button>
+  <!-- Левая боковая панель -->
+  <div class="sidebar">
+    <h1 style="padding: 0 20px;">Phantasm Role</h1>
+    
+    <div class="section active" onclick="showSection(0)">📖 Общий сюжет</div>
+    <div class="section" onclick="showSection(1)">👤 Персонажи</div>
+    <div class="section" onclick="showSection(2)">📅 События</div>
   </div>
 
-  <div id="timeline" class="timeline"></div>
+  <!-- Основная область -->
+  <div class="main" id="mainContent">
+    <!-- Сюда будет подгружаться контент -->
+  </div>
 
   <script>
-    let tiles = [];
+    const sections = [
+      // 0 - Общий сюжет
+      `<h2>Общий сюжет</h2>
+       <div class="card">
+         <textarea placeholder="Краткое описание всего сюжета..." style="width:100%; height:150px; background:#2a2a3a; color:#fff; border:1px solid #555; border-radius:8px; padding:10px;"></textarea>
+       </div>`,
 
-    function addTile(type) {
-      const tile = document.createElement('div');
-      tile.className = 'tile';
+      // 1 - Персонажи
+      `<h2>Персонажи</h2>
+       <div id="characters-list"></div>
+       <button onclick="addCharacter()">+ Добавить персонажа</button>`,
+
+      // 2 - События
+      `<h2>События</h2>
+       <p>Здесь будет список событий</p>`
+    ];
+
+    function showSection(index) {
+      document.getElementById('mainContent').innerHTML = sections[index];
       
-      if (type === 'character') {
-        tile.innerHTML = `
-          <div class="tile-header">👤 Персонаж</div>
-          <input type="text" placeholder="Имя персонажа" value="Новый персонаж">
-        `;
-      } else {
-        tile.innerHTML = `
-          <div class="tile-header">📖 Событие</div>
-          <textarea placeholder="Описание события...">Новое событие</textarea>
-        `;
-      }
-
-      tile.innerHTML += `<button class="delete-btn" onclick="deleteTile(this)">Удалить</button>`;
-      document.getElementById('timeline').appendChild(tile);
-      tiles.push(tile);
-    }
-
-    function deleteTile(btn) {
-      const tile = btn.parentElement;
-      tile.remove();
-      tiles = tiles.filter(t => t !== tile);
-    }
-
-    function saveStory() {
-      const data = tiles.map(tile => {
-        const input = tile.querySelector('input');
-        const textarea = tile.querySelector('textarea');
-        return {
-          type: input ? 'character' : 'event',
-          value: input ? input.value : (textarea ? textarea.value : '')
-        };
+      // Подсветка активного раздела
+      document.querySelectorAll('.section').forEach((el, i) => {
+        el.classList.toggle('active', i === index);
       });
 
-      localStorage.setItem('phantasmTimeline', JSON.stringify(data));
-      alert('✅ Хронология сюжета сохранена!');
+      if (index === 1) renderCharacters();
     }
 
-    function loadStory() {
-      const saved = localStorage.getItem('phantasmTimeline');
-      if (!saved) {
-        alert('Нет сохранённых сюжетов');
-        return;
-      }
+    let characters = [];
 
-      const data = JSON.parse(saved);
-      const timeline = document.getElementById('timeline');
-      timeline.innerHTML = '';
-      tiles = [];
-
-      data.forEach(item => {
-        const tile = document.createElement('div');
-        tile.className = 'tile';
-
-        if (item.type === 'character') {
-          tile.innerHTML = `
-            <div class="tile-header">👤 Персонаж</div>
-            <input type="text" value="${item.value || 'Персонаж'}">
-          `;
-        } else {
-          tile.innerHTML = `
-            <div class="tile-header">📖 Событие</div>
-            <textarea>${item.value || 'Событие'}</textarea>
-          `;
-        }
-
-        tile.innerHTML += `<button class="delete-btn" onclick="deleteTile(this)">Удалить</button>`;
-        timeline.appendChild(tile);
-        tiles.push(tile);
-      });
-
-      alert('✅ Хронология загружена!');
-    }
-
-    function clearAll() {
-      if (confirm('Очистить всю хронологию?')) {
-        document.getElementById('timeline').innerHTML = '';
-        tiles = [];
-        localStorage.removeItem('phantasmTimeline');
+    function addCharacter() {
+      const name = prompt("Имя персонажа:");
+      if (name) {
+        characters.push({ name, description: "" });
+        renderCharacters();
       }
     }
 
-    // Инициализация
+    function renderCharacters() {
+      const list = document.getElementById('characters-list');
+      if (!list) return;
+      
+      list.innerHTML = characters.map((char, i) => `
+        <div class="card" onclick="editCharacter(${i})">
+          <strong>${char.name}</strong>
+        </div>
+      `).join('');
+    }
+
+    function editCharacter(index) {
+      const char = characters[index];
+      const desc = prompt("Описание персонажа:", char.description);
+      if (desc !== null) {
+        char.description = desc;
+      }
+    }
+
+    // Начальная загрузка
     window.onload = () => {
-      if (localStorage.getItem('phantasmTimeline')) {
-        loadStory();
-      } else {
-        addTile('character');
-        addTile('event');
-      }
+      showSection(0); // открываем "Общий сюжет" по умолчанию
     };
   </script>
 </body>
