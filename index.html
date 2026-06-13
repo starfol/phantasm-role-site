@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phantasm Role — Создать анкету</title>
+  <title>Phantasm Role</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -11,189 +11,75 @@
       color: #e0d4ff;
       font-family: system-ui, sans-serif;
     }
-    .glass {
-      background: rgba(26, 17, 46, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(192, 38, 211, 0.3);
+    .card {
+      transition: all 0.3s ease;
     }
-    .gradient-text {
-      background: linear-gradient(to right, #c026d3, #db2777);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px rgba(192, 38, 211, 0.5);
     }
   </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen flex items-center justify-center">
 
-  <div class="max-w-2xl mx-auto py-12 px-6">
-    <div class="text-center mb-10">
-      <h1 class="text-5xl font-bold gradient-text mb-2">PHANTASM ROLE</h1>
-      <p class="text-pink-300 text-xl">Создай свою NSFW-анкету</p>
-    </div>
+  <!-- Входная страница 18+ -->
+  <div id="ageGate" class="max-w-2xl mx-auto text-center px-6">
+    <h1 class="text-6xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+      PHANTASM ROLE
+    </h1>
+    <p class="text-2xl mb-12 text-pink-200">Тёмный мир ролевых фантазий</p>
 
-    <div class="glass rounded-3xl p-8 shadow-2xl">
-
-      <!-- 18+ -->
-      <div class="bg-red-900/30 border border-red-500/50 p-6 rounded-2xl mb-8">
-        <label class="flex items-center gap-4 cursor-pointer text-lg">
-          <input type="checkbox" id="adult" required class="w-6 h-6 accent-pink-600">
-          <span>Мне исполнилось 18 лет. Я понимаю, что здесь NSFW-контент.</span>
-        </label>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Карточка 18+ -->
+      <div onclick="confirmAge()" 
+           class="card bg-gradient-to-br from-purple-900 to-pink-900 border border-pink-500 rounded-3xl p-10 cursor-pointer hover:border-pink-400">
+        <div class="text-6xl mb-6">🔞</div>
+        <h2 class="text-3xl font-bold mb-3">Мне 18+</h2>
+        <p class="text-pink-200">Я совершеннолетний и готов к NSFW-контенту</p>
       </div>
 
-      <div class="space-y-8">
-        <div>
-          <label class="block text-pink-300 mb-2 text-lg">О себе и персонаже</label>
-          <textarea id="about" rows="5" placeholder="Расскажи о себе, внешности, опыте, предпочтениях..." 
-                    class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4 text-lg resize-none focus:border-pink-500"></textarea>
-        </div>
-
-        <div class="grid grid-cols-2 gap-6">
-          <div>
-            <label class="block text-pink-300 mb-2">Пол</label>
-            <select id="gender" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
-              <option value="">Выберите</option>
-              <option value="Мужской">Мужской</option>
-              <option value="Женский">Женский</option>
-              <option value="Нон-байнари">Нон-байнари</option>
-              <option value="Транс">Транс</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-pink-300 mb-2">Позиция в сюжетах</label>
-            <select id="role" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
-              <option value="">Выберите</option>
-              <option value="Актив">Актив</option>
-              <option value="Пассив">Пассив</option>
-              <option value="Уни">Уни</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-pink-300 mb-2 text-lg">Что ищу</label>
-          <textarea id="search" rows="3" placeholder="Возраст, роль, предпочтения..." 
-                    class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4 text-lg resize-none"></textarea>
-        </div>
-
-        <div>
-          <label class="block text-pink-300 mb-2 text-lg">Кого ищу</label>
-          <div id="kogo" class="grid grid-cols-3 gap-3"></div>
-        </div>
-
-        <details class="group">
-          <summary class="text-xl font-semibold cursor-pointer flex items-center gap-3">
-            ❤️‍🔥 Мои фетиши
-            <span class="text-pink-400 group-open:rotate-180 transition-transform">▼</span>
-          </summary>
-          <div id="fetishes" class="mt-6 space-y-8"></div>
-        </details>
+      <!-- Карточка выхода -->
+      <div onclick="exitSite()" 
+           class="card bg-zinc-900 border border-zinc-700 rounded-3xl p-10 cursor-pointer hover:border-red-500">
+        <div class="text-6xl mb-6">🚪</div>
+        <h2 class="text-3xl font-bold mb-3 text-red-400">Мне меньше 18</h2>
+        <p class="text-zinc-400">Выйти из сайта</p>
       </div>
-
-      <button onclick="submitForm()" 
-              class="mt-10 w-full bg-gradient-to-r from-pink-600 to-purple-600 py-6 rounded-2xl text-2xl font-bold hover:brightness-110 transition">
-        Скопировать анкету
-      </button>
     </div>
+
+    <p class="text-xs text-zinc-500 mt-12">18+ | Только для взрослых</p>
   </div>
 
-  <!-- Success Modal -->
-  <div id="successModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="glass rounded-3xl p-10 max-w-md w-full text-center">
-      <div class="text-6xl mb-6">✅</div>
-      <h2 class="text-3xl font-bold mb-4">Анкета готова!</h2>
-      <div class="bg-zinc-950 rounded-2xl p-6 text-left mb-8 max-h-96 overflow-auto">
-        <pre id="copiedText" class="text-sm text-zinc-300 whitespace-pre-wrap"></pre>
-      </div>
-      <button onclick="location.reload()" class="w-full py-5 bg-pink-600 rounded-2xl text-xl font-semibold">
-        Создать новую анкету
-      </button>
+  <!-- Основная форма (скрыта изначально) -->
+  <div id="mainForm" class="hidden max-w-md mx-auto min-h-screen p-6">
+    <!-- Сюда вставим основную форму анкеты -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold">Создать анкету</h1>
+    </div>
+    <!-- Здесь будет твоя форма, которую мы делали раньше -->
+    <!-- Я оставил место, чтобы потом вставить -->
+    <div class="text-center text-zinc-400">
+      <p>Форма анкеты будет здесь</p>
+      <button onclick="backToAgeGate()" class="mt-8 text-pink-400">← Вернуться к подтверждению возраста</button>
     </div>
   </div>
 
   <script>
-    // ... (тот же скрипт, что был раньше — с generatePostText, submitForm и т.д.)
-    const fetishCategories = [ /* тот же массив фетишей */ 
-      {title: "Базовые разговорные", items: ["Грязные разговоры", "Секстинг", "Голосовые", "Видео/фото", "Флирт", "Намёки", "Ролевые диалоги"]},
-      {title: "BDSM и власть", items: ["Доминирование", "Подчинение", "Бондаж", "Шибari", "Порка", "Воск", "Унижение", "Пет-плей", "Ошейник", "Плётка"]},
-      {title: "Фетиши тела", items: ["Фут-фетиш", "Ноги", "Колготки/чулки", "Лингери", "Латекс", "Косплей", "Тату/пирсинг"]},
-      {title: "Сексуальные практики", items: ["Оральный", "Анальный", "Игрушки", "Камшот", "Кремпай", "Сквирт", "Эджинг"]},
-      {title: "Ролевые и табу", items: ["Учитель/ученик", "Доктор/пациент", "Инцест-рольки", "CNC", "Много партнёров", "Публичный секс"]}
-    ];
-
-    function renderFetishes() {
-      const container = document.getElementById('fetishes');
-      fetishCategories.forEach(cat => {
-        const div = document.createElement('div');
-        div.innerHTML = `
-          <h3 class="text-pink-400 font-medium mb-3">${cat.title}</h3>
-          <div class="grid grid-cols-2 gap-3">
-            ${cat.items.map(item => `
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" value="${item}" class="w-5 h-5 accent-pink-600">
-                <span>${item}</span>
-              </label>
-            `).join('')}
-          </div>`;
-        container.appendChild(div);
-      });
+    function confirmAge() {
+      document.getElementById('ageGate').classList.add('hidden');
+      document.getElementById('mainForm').classList.remove('hidden');
     }
 
-    function renderKogo() {
-      const kogoList = ["Актив", "Пассив", "Уни"];
-      const container = document.getElementById('kogo');
-      kogoList.forEach(item => {
-        const div = document.createElement('div');
-        div.className = "flex items-center gap-2";
-        div.innerHTML = `
-          <input type="checkbox" value="${item}" class="w-5 h-5 accent-pink-600">
-          <span>${item}</span>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function generatePostText() {
-      let text = 'Автор объявления достиг совершеннолетия\n\n';
-
-      const about = document.getElementById('about').value.trim();
-      if (about) text += `О себе:\n${about}\n\n`;
-
-      if (document.getElementById('gender').value) text += `Пол: ${document.getElementById('gender').value}\n`;
-
-      if (document.getElementById('role').value) text += `Позиция в сюжетах: ${document.getElementById('role').value}\n`;
-
-      const search = document.getElementById('search').value.trim();
-      if (search) text += `\nЧто ищу:\n${search}\n\n`;
-
-      const kogoSelected = Array.from(document.querySelectorAll('#kogo input:checked')).map(cb => cb.value);
-      if (kogoSelected.length) text += `Кого ищу: ${kogoSelected.join(', ')}\n\n`;
-
-      const selectedFetishes = Array.from(document.querySelectorAll('#fetishes input:checked')).map(cb => {
-        return '#' + cb.value.replace(/\s+/g, '_');
-      });
-
-      if (selectedFetishes.length) text += `Фетиши: ${selectedFetishes.join(' ')}\n`;
-
-      return text.trim();
-    }
-
-    async function submitForm() {
-      if (!document.getElementById('adult').checked) {
-        alert('Подтверди 18+');
-        return;
+    function exitSite() {
+      if (confirm("Вы действительно хотите покинуть сайт?")) {
+        window.location.href = "https://www.google.com";
       }
-
-      const text = generatePostText();
-      await navigator.clipboard.writeText(text);
-      document.getElementById('copiedText').textContent = text;
-      document.getElementById('successModal').classList.remove('hidden');
     }
 
-    window.onload = () => {
-      renderFetishes();
-      renderKogo();
-    };
+    function backToAgeGate() {
+      document.getElementById('mainForm').classList.add('hidden');
+      document.getElementById('ageGate').classList.remove('hidden');
+    }
   </script>
 </body>
 </html>
