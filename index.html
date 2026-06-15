@@ -3,106 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phantasm Role</title>
+  <title>Phantasm Role — Создать анкету</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { background: linear-gradient(135deg, #0f0a1f, #1a0f2e); color: #e0d4ff; font-family: system-ui; }
-    .glass { background: rgba(26, 17, 46, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(192, 38, 211, 0.3); }
+    body {
+      background: linear-gradient(135deg, #0f0a1f, #1a0f2e);
+      color: #e0d4ff;
+      font-family: system-ui, sans-serif;
+    }
+    .glass {
+      background: rgba(26, 17, 46, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(192, 38, 211, 0.25);
+    }
   </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen py-12">
 
-  <!-- Страница подтверждения 18+ -->
-  <div id="ageGate" class="min-h-screen flex items-center justify-center">
-    <div class="text-center max-w-md px-6">
-      <h1 class="text-6xl font-bold mb-6 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+  <div class="max-w-2xl mx-auto px-4">
+    <div class="text-center mb-10">
+      <h1 class="text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
         PHANTASM ROLE
       </h1>
-      <p class="text-2xl mb-12 text-pink-200">Тёмный мир ролевых фантазий</p>
-
-      <div onclick="confirmAge()" 
-           class="glass rounded-3xl p-12 cursor-pointer hover:scale-105 transition-transform border border-pink-500">
-        <div class="text-7xl mb-6">🔞</div>
-        <h2 class="text-3xl font-bold mb-4">Мне исполнилось 18 лет</h2>
-        <p class="text-pink-300">Я понимаю, что здесь будет NSFW-контент</p>
-      </div>
-
-      <p onclick="exitSite()" class="mt-10 text-zinc-500 hover:text-red-400 cursor-pointer">
-        Мне меньше 18 — выйти
-      </p>
+      <p class="text-pink-300 text-xl">Создать NSFW-анкету</p>
     </div>
-  </div>
 
-  <!-- Основная форма анкеты -->
-  <div id="mainForm" class="hidden">
-    <div class="max-w-md mx-auto min-h-screen p-6">
+    <div class="glass rounded-3xl p-8 shadow-2xl">
 
-      <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold">Создать анкету</h1>
+      <!-- 18+ -->
+      <div class="bg-red-900/30 border border-red-500/60 p-6 rounded-2xl mb-8 text-center">
+        <label class="flex items-center justify-center gap-4 cursor-pointer text-lg">
+          <input type="checkbox" id="adult" required class="w-6 h-6 accent-pink-600">
+          <span class="font-medium">Мне исполнилось 18 лет и я согласен с NSFW-контентом</span>
+        </label>
       </div>
 
-      <div class="space-y-8">
+      <!-- О себе -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-3 text-pink-300">📝 О себе и персонаже</h2>
+        <textarea id="about" rows="6" placeholder="Внешность, характер, опыт, что нравится и не нравится..." 
+                  class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4 text-base resize-y"></textarea>
+      </div>
 
+      <!-- Пол и Позиция -->
+      <div class="grid grid-cols-2 gap-6 mb-8">
         <div>
-          <h2 class="text-xl font-semibold mb-4 flex items-center gap-2"><span class="text-pink-500">📝</span> О себе и персонаже</h2>
-          <textarea id="about" rows="5" placeholder="Внешность, опыт, характер, фантазии..." 
-                    class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg resize-none"></textarea>
+          <h2 class="text-xl font-semibold mb-3 text-pink-300">⚧ Пол</h2>
+          <select id="gender" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4">
+            <option value="">Выберите пол</option>
+            <option value="Мужской">Мужской</option>
+            <option value="Женский">Женский</option>
+            <option value="Нон-байнари">Нон-байнари</option>
+            <option value="Транс">Транс</option>
+          </select>
         </div>
-
-        <div class="grid grid-cols-2 gap-6">
-          <div>
-            <h2 class="text-xl font-semibold mb-4">Пол</h2>
-            <select id="gender" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg">
-              <option value="">Выберите</option>
-              <option value="Мужской">Мужской</option>
-              <option value="Женский">Женский</option>
-              <option value="Нон-байнари">Нон-байнари</option>
-              <option value="Транс">Транс</option>
-            </select>
-          </div>
-          <div>
-            <h2 class="text-xl font-semibold mb-4">Позиция</h2>
-            <select id="role" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg">
-              <option value="">Выберите</option>
-              <option value="Актив">Актив</option>
-              <option value="Пассив">Пассив</option>
-              <option value="Уни">Уни</option>
-            </select>
-          </div>
-        </div>
-
         <div>
-          <h2 class="text-xl font-semibold mb-4">Что ищу</h2>
-          <textarea id="search" rows="3" placeholder="Что ищу в партнёре..." 
-                    class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg resize-none"></textarea>
+          <h2 class="text-xl font-semibold mb-3 text-pink-300">🔥 Позиция в сюжетах</h2>
+          <select id="role" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4">
+            <option value="">Выберите позицию</option>
+            <option value="Актив">Актив</option>
+            <option value="Пассив">Пассив</option>
+            <option value="Уни">Уни</option>
+            <option value="Свитч">Свитч</option>
+          </select>
         </div>
+      </div>
 
-        <div>
-          <h2 class="text-xl font-semibold mb-4">Кого ищу</h2>
-          <div id="kogo" class="grid grid-cols-3 gap-3"></div>
-        </div>
+      <!-- Что ищу -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-3 text-pink-300">🔍 Что ищу</h2>
+        <textarea id="search" rows="3" placeholder="Возраст, формат, предпочтения, ограничения..." 
+                  class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4 text-base resize-y"></textarea>
+      </div>
 
-        <details class="group">
-          <summary class="text-xl font-semibold cursor-pointer flex items-center gap-3">
-            ❤️‍🔥 Мои фетиши
-            <span class="text-pink-400 group-open:rotate-180">▼</span>
-          </summary>
-          <div id="fetishes" class="mt-6 space-y-8"></div>
-        </details>
+      <!-- Кого ищу -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-3 text-pink-300">👥 Кого ищу</h2>
+        <div id="kogo" class="grid grid-cols-3 gap-3"></div>
+      </div>
+
+      <!-- Фетиши -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-4 text-pink-300">❤️‍🔥 Мои фетиши (ставь любые)</h2>
+        <div id="fetishes" class="space-y-8"></div>
+      </div>
+
+      <!-- Долговременная игра -->
+      <div class="mb-8">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" id="longterm" class="w-5 h-5 accent-pink-600">
+          <span class="text-lg">Готов(а) к долговременной игре</span>
+        </label>
       </div>
 
       <button onclick="submitForm()" 
-              class="mt-10 w-full bg-gradient-to-r from-pink-600 to-purple-600 py-6 rounded-3xl text-2xl font-bold">
+              class="w-full bg-gradient-to-r from-pink-600 via-purple-600 to-violet-600 py-6 rounded-3xl text-2xl font-bold hover:brightness-110 transition-all">
         Скопировать анкету
       </button>
     </div>
   </div>
 
-  <!-- Модалка успеха -->
+  <!-- Success Modal -->
   <div id="successModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
     <div class="glass rounded-3xl p-10 max-w-md w-full text-center">
       <div class="text-6xl mb-6">✅</div>
-      <h2 class="text-3xl font-bold mb-4">Анкета скопирована!</h2>
+      <h2 class="text-3xl font-bold mb-4">Анкета скопирована</h2>
       <div class="bg-zinc-950 rounded-2xl p-6 text-left mb-8 max-h-96 overflow-auto">
         <pre id="copiedText" class="text-sm text-zinc-300 whitespace-pre-wrap"></pre>
       </div>
@@ -113,13 +118,13 @@
   </div>
 
   <script>
-    // === Фетиши и Кого ищу ===
-    const fetishCategories = [ /* тот же массив, что был раньше */ 
-      {title: "Базовые разговорные", items: ["Грязные разговоры", "Секстинг", "Голосовые", "Видео/фото", "Флирт", "Намёки", "Ролевые диалоги"]},
-      {title: "BDSM и власть", items: ["Доминирование", "Подчинение", "Бондаж", "Шибari", "Порка", "Воск", "Унижение", "Пет-плей", "Ошейник", "Плётка"]},
-      {title: "Фетиши тела", items: ["Фут-фетиш", "Ноги", "Колготки/чулки", "Лингери", "Латекс", "Косплей", "Тату/пирсинг"]},
-      {title: "Сексуальные практики", items: ["Оральный", "Анальный", "Игрушки", "Камшот", "Кремпай", "Сквирт", "Эджинг"]},
-      {title: "Ролевые и табу", items: ["Учитель/ученик", "Доктор/пациент", "Инцест-рольки", "CNC", "Много партнёров", "Публичный секс"]}
+    // Фетиши (как на poiskrp + наши)
+    const fetishCategories = [
+      {title: "Базовые", items: ["Грязные разговоры", "Секстинг", "Голосовые", "Видео/фото", "Флирт", "Ролевые диалоги"]},
+      {title: "BDSM", items: ["Доминирование", "Подчинение", "Бондаж", "Порка", "Унижение", "Ошейник", "Пет-плей", "Шибari"]},
+      {title: "Фетиши тела", items: ["Фут-фетиш", "Ноги", "Колготки", "Лингери", "Латекс", "Косплей", "Тату"]},
+      {title: "Секс", items: ["Оральный", "Анальный", "Игрушки", "Камшот", "Кремпай", "Сквирт", "Эджинг"]},
+      {title: "Ролевки", items: ["Учитель/ученик", "Доктор/пациент", "Инцест-рольки", "CNC", "Много партнёров", "Публичный секс"]}
     ];
 
     function renderFetishes() {
@@ -141,15 +146,12 @@
     }
 
     function renderKogo() {
-      const kogoList = ["Актив", "Пассив", "Уни"];
+      const list = ["Актив", "Пассив", "Уни", "Свитч"];
       const container = document.getElementById('kogo');
-      kogoList.forEach(item => {
+      list.forEach(item => {
         const div = document.createElement('div');
         div.className = "flex items-center gap-2";
-        div.innerHTML = `
-          <input type="checkbox" value="${item}" class="w-5 h-5 accent-pink-600">
-          <span>${item}</span>
-        `;
+        div.innerHTML = `<input type="checkbox" value="${item}" class="w-5 h-5 accent-pink-600"><span>${item}</span>`;
         container.appendChild(div);
       });
     }
@@ -161,25 +163,27 @@
       if (about) text += `О себе:\n${about}\n\n`;
 
       if (document.getElementById('gender').value) text += `Пол: ${document.getElementById('gender').value}\n`;
-
-      if (document.getElementById('role').value) text += `Позиция в сюжетах: ${document.getElementById('role').value}\n`;
+      if (document.getElementById('role').value) text += `Позиция: ${document.getElementById('role').value}\n`;
 
       const search = document.getElementById('search').value.trim();
       if (search) text += `\nЧто ищу:\n${search}\n\n`;
 
-      const kogoSelected = Array.from(document.querySelectorAll('#kogo input:checked')).map(cb => cb.value);
-      if (kogoSelected.length) text += `Кого ищу: ${kogoSelected.join(', ')}\n\n`;
+      const kogo = Array.from(document.querySelectorAll('#kogo input:checked')).map(cb => cb.value);
+      if (kogo.length) text += `Кого ищу: ${kogo.join(', ')}\n\n`;
 
-      const selectedFetishes = Array.from(document.querySelectorAll('#fetishes input:checked')).map(cb => {
-        return '#' + cb.value.replace(/\s+/g, '_');
-      });
+      const fetishes = Array.from(document.querySelectorAll('#fetishes input:checked')).map(cb => '#' + cb.value.replace(/\s+/g, '_'));
+      if (fetishes.length) text += `Фетиши: ${fetishes.join(' ')}\n`;
 
-      if (selectedFetishes.length) text += `Фетиши: ${selectedFetishes.join(' ')}\n`;
+      if (document.getElementById('longterm').checked) text += `\nГотов(а) к долговременной игре\n`;
 
       return text.trim();
     }
 
     function submitForm() {
+      if (!document.getElementById('adult').checked) {
+        alert('Подтвердите совершеннолетие');
+        return;
+      }
       const text = generatePostText();
       navigator.clipboard.writeText(text).then(() => {
         document.getElementById('copiedText').textContent = text;
@@ -187,20 +191,10 @@
       });
     }
 
-    function confirmAge() {
-      document.getElementById('ageGate').classList.add('hidden');
-      document.getElementById('mainForm').classList.remove('hidden');
+    window.onload = () => {
       renderFetishes();
       renderKogo();
-    }
-
-    function exitSite() {
-      if (confirm("Вы действительно хотите выйти?")) {
-        window.location.href = "https://www.google.com";
-      }
-    }
-
-    window.onload = () => {};
+    };
   </script>
 </body>
 </html>
