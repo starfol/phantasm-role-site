@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phantasm Role</title>
+  <title>Phantasm Role — Создать анкету</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { background: linear-gradient(135deg, #0f0a1f, #1a0f2e); color: #e0d4ff; font-family: system-ui; }
@@ -12,7 +12,7 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- Страница 18+ -->
+  <!-- 18+ вход -->
   <div id="ageGate" class="min-h-screen flex items-center justify-center">
     <div class="text-center max-w-md px-6">
       <h1 class="text-6xl font-bold mb-6 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
@@ -25,25 +25,27 @@
         <h2 class="text-3xl font-bold mb-4">Мне исполнилось 18 лет</h2>
         <p class="text-pink-300">Я понимаю, что здесь будет NSFW-контент</p>
       </div>
-
-      <p onclick="exitSite()" class="mt-10 text-zinc-500 hover:text-red-400 cursor-pointer">
-        Мне меньше 18 — выйти
-      </p>
     </div>
   </div>
 
   <!-- Основная форма -->
   <div id="mainForm" class="hidden max-w-2xl mx-auto py-10 px-6">
-
     <div class="glass rounded-3xl p-10">
 
       <h1 class="text-4xl font-bold text-center mb-10">Создать анкету</h1>
 
-      <!-- === О СЕБЕ (первый блок) === -->
+      <!-- О себе -->
       <div class="mb-10">
         <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3"><span class="text-pink-400">📝</span> О себе и персонаже</h2>
         <textarea id="about" rows="6" placeholder="Внешность, опыт, характер, что нравится..." 
                   class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-6 py-5 text-lg resize-y"></textarea>
+        
+        <div class="mt-4">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" id="gm" class="w-5 h-5 accent-pink-600">
+            <span class="text-lg">Я ГМ (Гейм Мастер)</span>
+          </label>
+        </div>
       </div>
 
       <div class="grid grid-cols-2 gap-6 mb-10">
@@ -68,17 +70,24 @@
         </div>
       </div>
 
-      <!-- Фетиши -->
+      <!-- Фетиши (большой список) -->
       <div class="mb-12">
         <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3"><span class="text-pink-400">❤️‍🔥</span> Мои фетиши</h2>
         <div id="fetishes" class="space-y-8"></div>
       </div>
 
-      <!-- === КОГО ИЩУ (второй блок) === -->
+      <!-- Кого ищу -->
       <div>
         <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3"><span class="text-pink-400">🔍</span> Кого ищу</h2>
-        <textarea id="search" rows="5" placeholder="Возраст, роль, предпочтения, ограничения..." 
+        <textarea id="search" rows="4" placeholder="Возраст, роль, предпочтения..." 
                   class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-6 py-5 text-lg resize-y"></textarea>
+        
+        <div class="mt-4">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" id="search_gm" class="w-5 h-5 accent-pink-600">
+            <span class="text-lg">Ищу ГМ</span>
+          </label>
+        </div>
       </div>
 
       <button onclick="submitForm()" 
@@ -109,11 +118,11 @@
 
   <script>
     const fetishCategories = [
-      {title: "Базовые разговорные", items: ["Грязные разговоры", "Секстинг", "Голосовые", "Видео/фото", "Флирт", "Намёки", "Ролевые диалоги"]},
-      {title: "BDSM и власть", items: ["Доминирование", "Подчинение", "Бондаж", "Шибari", "Порка", "Воск", "Унижение", "Пет-плей", "Ошейник", "Плётка"]},
-      {title: "Фетиши тела", items: ["Фут-фетиш", "Ноги", "Колготки/чулки", "Лингери", "Латекс", "Косплей", "Тату/пирсинг"]},
-      {title: "Сексуальные практики", items: ["Оральный", "Анальный", "Игрушки", "Камшот", "Кремпай", "Сквирт", "Эджинг"]},
-      {title: "Ролевые и табу", items: ["Учитель/ученик", "Доктор/пациент", "Инцест-рольки", "CNC", "Много партнёров", "Публичный секс"]}
+      {title: "Сеттинги", items: ["антиутопия", "дикий_запад", "историческое", "киберпанк", "постапокалипсис", "современный_мир", "стимпанк", "темное_фэнтези", "утопия", "фантастика", "фэнтези"]},
+      {title: "Жанры", items: ["виртуальная_семья", "война", "выживание", "гурo", "детектив", "драма", "криминал", "мистика", "повседневность", "приключение", "реализм", "романтика", "ужас", "экшн", "юмор"]},
+      {title: "Лёгкие фетиши", items: ["анал", "бимбо", "гарем", "ддлг", "игрушки", "измена", "классика", "кремпай", "куни", "милфы", "минет", "обилие_жидкостей", "пайзури", "приятные_запахи", "толстушки", "футфетиш", "черные"]},
+      {title: "Фетиши", items: ["анилингус", "бдсм", "беременные", "бондаж", "буккаке", "волосатость", "блевотина", "вомит", "гипертрофия", "глори_хол", "грубость", "групповой", "грязь", "деградация", "жирные", "животные", "золотой_дождь", "зд", "игры_с_едой", "изнасилование", "инцест", "контроль_оргазма", "куколд", "лактация", "межрасовый", "минимум_табу", "лоли", "молодые_девушки", "шота", "молодые_парни", "монстрдевушки", "монстры", "неприятные_запахи", "петплей", "посторонние_предметы", "принуждение", "публичность", "разница_в_возрасте", "разница_в_размере", "сексвайф", "тентакли", "удушье", "унижение", "фистинг", "фемдом", "феминизация", "фурри", "шибари"]},
+      {title: "Хард фетиши", items: ["ампути", "без_табу", "бладплей", "болбастинг", "воре", "копро", "найфплей", "насекомые", "некро", "нестандартные_отверстия", "уретра", "эрогуро"]}
     ];
 
     function renderFetishes() {
@@ -126,7 +135,7 @@
             ${cat.items.map(item => `
               <label class="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" value="${item}" class="w-5 h-5 accent-pink-600">
-                <span>${item}</span>
+                <span>${item.replace(/_/g, ' ')}</span>
               </label>
             `).join('')}
           </div>`;
@@ -143,8 +152,12 @@
       if (document.getElementById('gender').value) text += `Пол: ${document.getElementById('gender').value}\n`;
       if (document.getElementById('role').value) text += `Позиция в сюжетах: ${document.getElementById('role').value}\n`;
 
+      if (document.getElementById('gm').checked) text += `Играю ГМ\n\n`;
+
       const search = document.getElementById('search').value.trim();
-      if (search) text += `\nКого ищу:\n${search}\n\n`;
+      if (search) text += `Кого ищу:\n${search}\n\n`;
+
+      if (document.getElementById('search_gm').checked) text += `Ищу ГМ\n\n`;
 
       const selected = Array.from(document.querySelectorAll('#fetishes input:checked')).map(cb => '#' + cb.value.replace(/\s+/g, '_'));
       if (selected.length) text += `Фетиши: ${selected.join(' ')}\n`;
@@ -164,10 +177,6 @@
       });
     }
 
-    function goToSuggested() {
-      window.open('https://vk.com/wall-180485573?suggested=1', '_blank');
-    }
-
     function confirmAge() {
       document.getElementById('ageGate').classList.add('hidden');
       document.getElementById('mainForm').classList.remove('hidden');
@@ -175,7 +184,11 @@
     }
 
     function exitSite() {
-      if (confirm("Выйти?")) window.location.href = "https://www.google.com";
+      if (confirm("Выйти?")) window.location.href = "https://vk.ru/phantasm_role";
+    }
+
+    function goToSuggested() {
+      window.open('https://vk.com/wall-180485573?suggested=1', '_blank');
     }
 
     window.onload = () => {};
