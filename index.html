@@ -135,15 +135,15 @@
           <p class="text-pink-300 mb-3">Позиция партнёра</p>
           <div class="grid grid-cols-3 gap-4">
             <label class="flex items-center gap-3 cursor-pointer bg-zinc-900 border border-zinc-700 rounded-2xl p-4">
-              <input type="checkbox" id="seek_active" class="accent-pink-600">
+              <input type="radio" name="seek_role" value="Актив" class="accent-pink-600">
               <span>Актив</span>
             </label>
             <label class="flex items-center gap-3 cursor-pointer bg-zinc-900 border border-zinc-700 rounded-2xl p-4">
-              <input type="checkbox" id="seek_passive" class="accent-pink-600">
+              <input type="radio" name="seek_role" value="Пассив" class="accent-pink-600">
               <span>Пассив</span>
             </label>
             <label class="flex items-center gap-3 cursor-pointer bg-zinc-900 border border-zinc-700 rounded-2xl p-4">
-              <input type="checkbox" id="seek_uni" class="accent-pink-600">
+              <input type="radio" name="seek_role" value="Уни" class="accent-pink-600">
               <span>Уни</span>
             </label>
           </div>
@@ -178,7 +178,7 @@
     </div>
   </div>
 
-  <!-- Модалка успеха -->
+  <!-- Модалка -->
   <div id="successModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
     <div class="glass rounded-3xl p-10 max-w-md w-full text-center">
       <div class="text-6xl mb-6">✅</div>
@@ -190,7 +190,7 @@
 
       <div class="flex gap-4">
         <button onclick="goToSuggested()" class="flex-1 py-5 bg-pink-600 rounded-2xl text-xl font-semibold">
-          Перейти в предложенные новости
+          Перейти в предложенные
         </button>
         <button onclick="hideModal()" class="flex-1 py-5 bg-zinc-700 rounded-2xl text-xl font-semibold">
           Отредактировать
@@ -200,7 +200,6 @@
   </div>
 
   <script>
-    // ... (тот же большой список фетишей)
     const fetishCategories = [
       {title: "Сеттинги", items: ["антиутопия","дикий_запад","историческое","киберпанк","постапокалипсис","современный_мир","стимпанк","темное_фэнтези","утопия","фантастика","фэнтези"]},
       {title: "Жанры", items: ["виртуальная_семья","война","выживание","гуро","детектив","драма","криминал","мистика","повседневность","приключение","реализм","романтика","ужас","экшн","юмор"]},
@@ -250,11 +249,8 @@
       if (about) text += `\nО себе:\n${about}\n\n`;
 
       // Кого ищу (позиция)
-      let seek = [];
-      if (document.getElementById('seek_active').checked) seek.push("Актив");
-      if (document.getElementById('seek_passive').checked) seek.push("Пассив");
-      if (document.getElementById('seek_uni').checked) seek.push("Уни");
-      if (seek.length) text += `Кого ищу (позиция): ${seek.join(', ')}\n\n`;
+      const seekRole = document.querySelector('input[name="seek_role"]:checked');
+      if (seekRole) text += `Кого ищу (позиция): ${seekRole.value}\n\n`;
 
       const search = document.getElementById('search').value.trim();
       if (search) text += `Кого ищу:\n${search}\n\n`;
@@ -280,6 +276,8 @@
       navigator.clipboard.writeText(text).then(() => {
         document.getElementById('copiedText').textContent = text;
         document.getElementById('successModal').classList.remove('hidden');
+      }).catch(() => {
+        alert('Не удалось скопировать. Попробуй в Chrome.');
       });
     }
 
