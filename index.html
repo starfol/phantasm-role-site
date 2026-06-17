@@ -121,18 +121,37 @@
       </div>
 
       <!-- О себе -->
-      <div class="mb-8">
-        <h2 class="text-xl font-semibold mb-4">О себе и персонаже</h2>
+      <div class="mb-10">
+        <h2 class="text-2xl font-semibold mb-6">О себе и персонаже</h2>
         <textarea id="about" rows="5" placeholder="Внешность, опыт, характер..." 
                   class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-6 py-5"></textarea>
       </div>
 
       <!-- Кого ищу -->
-      <div class="mb-8">
-        <h2 class="text-xl font-semibold mb-4">Кого ищу</h2>
-        <textarea id="search" rows="4" placeholder="Возраст, позиция, предпочтения..." 
-                  class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-6 py-5"></textarea>
+      <div class="mb-10">
+        <h2 class="text-2xl font-semibold mb-6">Кого ищу</h2>
         
+        <div class="mb-6">
+          <p class="text-pink-300 mb-3">Позиция партнёра</p>
+          <div class="grid grid-cols-3 gap-4">
+            <label class="flex items-center gap-3 cursor-pointer bg-zinc-900 border border-zinc-700 rounded-2xl p-4">
+              <input type="checkbox" id="seek_active" class="accent-pink-600">
+              <span>Актив</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer bg-zinc-900 border border-zinc-700 rounded-2xl p-4">
+              <input type="checkbox" id="seek_passive" class="accent-pink-600">
+              <span>Пассив</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer bg-zinc-900 border border-zinc-700 rounded-2xl p-4">
+              <input type="checkbox" id="seek_uni" class="accent-pink-600">
+              <span>Уни</span>
+            </label>
+          </div>
+        </div>
+
+        <textarea id="search" rows="4" placeholder="Дополнительное описание кого ищу..." 
+                  class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-6 py-5"></textarea>
+
         <label class="flex items-center gap-3 cursor-pointer mt-4">
           <input type="checkbox" id="search_gm" class="w-5 h-5 accent-pink-600">
           <span class="text-lg">Ищу ГМ</span>
@@ -140,15 +159,15 @@
       </div>
 
       <!-- Фетиши -->
-      <div class="mb-8">
-        <h2 class="text-xl font-semibold mb-6">❤️‍🔥 Мои фетиши</h2>
+      <div class="mb-10">
+        <h2 class="text-2xl font-semibold mb-6">❤️‍🔥 Мои фетиши</h2>
         <div id="fetishes" class="space-y-8"></div>
       </div>
 
       <!-- Табу -->
       <div>
-        <h2 class="text-xl font-semibold mb-4">Табу (что точно не хочу)</h2>
-        <textarea id="tabu" rows="3" placeholder="Напиши свои табу..." 
+        <h2 class="text-2xl font-semibold mb-4">Табу</h2>
+        <textarea id="tabu" rows="3" placeholder="Что точно не хочу..." 
                   class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-6 py-5"></textarea>
       </div>
 
@@ -159,19 +178,21 @@
     </div>
   </div>
 
-  <!-- Success Modal -->
+  <!-- Модалка успеха -->
   <div id="successModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
     <div class="glass rounded-3xl p-10 max-w-md w-full text-center">
       <div class="text-6xl mb-6">✅</div>
       <h2 class="text-3xl font-bold mb-4">Анкета скопирована!</h2>
+      
       <div class="bg-zinc-950 rounded-2xl p-6 text-left mb-8 max-h-96 overflow-auto">
         <pre id="copiedText" class="text-sm text-zinc-300 whitespace-pre-wrap"></pre>
       </div>
+
       <div class="flex gap-4">
         <button onclick="goToSuggested()" class="flex-1 py-5 bg-pink-600 rounded-2xl text-xl font-semibold">
-          Перейти в предложенные
+          Перейти в предложенные новости
         </button>
-        <button onclick="location.reload()" class="flex-1 py-5 bg-zinc-700 rounded-2xl text-xl font-semibold">
+        <button onclick="hideModal()" class="flex-1 py-5 bg-zinc-700 rounded-2xl text-xl font-semibold">
           Отредактировать
         </button>
       </div>
@@ -179,7 +200,7 @@
   </div>
 
   <script>
-    // Здесь будет большой список фетишей, как ты просил
+    // ... (тот же большой список фетишей)
     const fetishCategories = [
       {title: "Сеттинги", items: ["антиутопия","дикий_запад","историческое","киберпанк","постапокалипсис","современный_мир","стимпанк","темное_фэнтези","утопия","фантастика","фэнтези"]},
       {title: "Жанры", items: ["виртуальная_семья","война","выживание","гуро","детектив","драма","криминал","мистика","повседневность","приключение","реализм","романтика","ужас","экшн","юмор"]},
@@ -220,22 +241,28 @@
 
       if (document.getElementById('gm').checked) text += `Играю ГМ\n`;
 
-      // Объём постов
       const pc = document.getElementById('volume_pc').value;
       const phone = document.getElementById('volume_phone').value;
       if (pc) text += `Объём ПК: ${pc}\n`;
       if (phone) text += `Объём телефон: ${phone}\n`;
 
       const about = document.getElementById('about').value.trim();
-      if (about) text += `\nО себе:\n${about}\n`;
+      if (about) text += `\nО себе:\n${about}\n\n`;
+
+      // Кого ищу (позиция)
+      let seek = [];
+      if (document.getElementById('seek_active').checked) seek.push("Актив");
+      if (document.getElementById('seek_passive').checked) seek.push("Пассив");
+      if (document.getElementById('seek_uni').checked) seek.push("Уни");
+      if (seek.length) text += `Кого ищу (позиция): ${seek.join(', ')}\n\n`;
 
       const search = document.getElementById('search').value.trim();
-      if (search) text += `\nКого ищу:\n${search}\n`;
+      if (search) text += `Кого ищу:\n${search}\n\n`;
 
-      if (document.getElementById('search_gm').checked) text += `Ищу ГМ\n`;
+      if (document.getElementById('search_gm').checked) text += `Ищу ГМ\n\n`;
 
       const selected = Array.from(document.querySelectorAll('#fetishes input:checked')).map(cb => '#' + cb.value.replace(/\s+/g, '_'));
-      if (selected.length) text += `\nФетиши: ${selected.join(' ')}\n`;
+      if (selected.length) text += `Фетиши: ${selected.join(' ')}\n`;
 
       const tabu = document.getElementById('tabu').value.trim();
       if (tabu) text += `\nТабу: ${tabu}\n`;
@@ -248,11 +275,20 @@
         alert('Подтверди совершеннолетие');
         return;
       }
+
       const text = generatePostText();
       navigator.clipboard.writeText(text).then(() => {
         document.getElementById('copiedText').textContent = text;
         document.getElementById('successModal').classList.remove('hidden');
       });
+    }
+
+    function goToSuggested() {
+      window.open('https://vk.com/wall-180485573?suggested=1', '_blank');
+    }
+
+    function hideModal() {
+      document.getElementById('successModal').classList.add('hidden');
     }
 
     function confirmAge() {
