@@ -12,13 +12,12 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- Основная форма (сразу открывается) -->
   <div class="max-w-2xl mx-auto py-10 px-6">
     <div class="glass rounded-3xl p-10">
 
       <h1 class="text-4xl font-bold text-center mb-10">Создать анкету</h1>
 
-      <!-- Чекбокс 18+ внутри формы -->
+      <!-- 18+ -->
       <div class="mb-8 bg-red-900/30 border border-red-500/50 p-5 rounded-3xl">
         <label class="flex items-center gap-3 cursor-pointer">
           <input type="checkbox" id="adult" class="w-6 h-6 accent-pink-600">
@@ -111,7 +110,7 @@
                   class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-6 py-5"></textarea>
       </div>
 
-      <!-- Кого ищу -->
+      <!-- Кого ищу (единый блок) -->
       <div class="mb-10">
         <h2 class="text-2xl font-semibold mb-6">Кого ищу</h2>
         
@@ -179,7 +178,7 @@
   </div>
 
   <script>
-    const fetishCategories = [
+    const fetishCategories = [ /* тот же список */ 
       {title: "Сеттинги", items: ["антиутопия","дикий_запад","историческое","киберпанк","постапокалипсис","современный_мир","стимпанк","темное_фэнтези","утопия","фантастика","фэнтези"]},
       {title: "Жанры", items: ["виртуальная_семья","война","выживание","гуро","детектив","драма","криминал","мистика","повседневность","приключение","реализм","романтика","ужас","экшн","юмор"]},
       {title: "Лёгкие фетиши", items: ["анал","бимбо","гарем","ддлг","игрушки","измена","классика","кремпай","куни","милфы","минет","обилие_жидкостей","пайзури","приятные_запахи","толстушки","футфетиш","черные"]},
@@ -235,7 +234,7 @@
       const search = document.getElementById('search').value.trim();
       if (search) text += `Кого ищу:\n${search}\n\n`;
 
-      if (document.getElementById('search_gm').checked) text += `Ищу ГМ\n\n`;
+      if (document.getElementById('search_gm').checked) text += `#Ищу_ГМ\n\n`;
 
       const selected = Array.from(document.querySelectorAll('#fetishes input:checked')).map(cb => '#' + cb.value.replace(/\s+/g, '_'));
       if (selected.length) text += `Фетиши: ${selected.join(' ')}\n`;
@@ -256,9 +255,7 @@
       navigator.clipboard.writeText(text).then(() => {
         document.getElementById('copiedText').textContent = text;
         document.getElementById('successModal').classList.remove('hidden');
-      }).catch(() => {
-        alert('Не удалось скопировать. Попробуй в Chrome.');
-      });
+      }).catch(() => alert('Не удалось скопировать'));
     }
 
     function goToSuggested() {
@@ -269,7 +266,6 @@
       document.getElementById('successModal').classList.add('hidden');
     }
 
-    // Сразу показываем форму
     window.onload = () => {
       renderFetishes();
     };
