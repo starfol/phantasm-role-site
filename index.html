@@ -178,46 +178,7 @@
   </div>
 
   <script>
-    // === Сохранение и загрузка данных ===
-    function saveFormData() {
-      const data = {
-        gender: document.querySelector('input[name="gender"]:checked')?.value,
-        role: document.querySelector('input[name="role"]:checked')?.value,
-        style: document.querySelector('input[name="style"]:checked')?.value,
-        gm: document.getElementById('gm').checked,
-        volume_pc: document.getElementById('volume_pc').value,
-        volume_phone: document.getElementById('volume_phone').value,
-        about: document.getElementById('about').value,
-        seek_role: document.querySelector('input[name="seek_role"]:checked')?.value,
-        search: document.getElementById('search').value,
-        search_gm: document.getElementById('search_gm').checked,
-        tabu: document.getElementById('tabu').value,
-        adult: document.getElementById('adult').checked
-      };
-      localStorage.setItem('phantasmFormData', JSON.stringify(data));
-    }
-
-    function loadFormData() {
-      const saved = localStorage.getItem('phantasmFormData');
-      if (!saved) return;
-      const data = JSON.parse(saved);
-
-      if (data.gender) document.querySelector(`input[name="gender"][value="${data.gender}"]`).checked = true;
-      if (data.role) document.querySelector(`input[name="role"][value="${data.role}"]`).checked = true;
-      if (data.style) document.querySelector(`input[name="style"][value="${data.style}"]`).checked = true;
-      if (data.gm) document.getElementById('gm').checked = true;
-      if (data.volume_pc) document.getElementById('volume_pc').value = data.volume_pc;
-      if (data.volume_phone) document.getElementById('volume_phone').value = data.volume_phone;
-      if (data.about) document.getElementById('about').value = data.about;
-      if (data.seek_role) document.querySelector(`input[name="seek_role"][value="${data.seek_role}"]`).checked = true;
-      if (data.search) document.getElementById('search').value = data.search;
-      if (data.search_gm) document.getElementById('search_gm').checked = true;
-      if (data.tabu) document.getElementById('tabu').value = data.tabu;
-      if (data.adult) document.getElementById('adult').checked = true;
-    }
-
-    // Остальной код (фетиши, генерация и т.д.)
-    const fetishCategories = [ /* тот же список, что был */ 
+    const fetishCategories = [
       {title: "Сеттинги", items: ["антиутопия","дикий_запад","историческое","киберпанк","постапокалипсис","современный_мир","стимпанк","темное_фэнтези","утопия","фантастика","фэнтези"]},
       {title: "Жанры", items: ["виртуальная_семья","война","выживание","гуро","детектив","драма","криминал","мистика","повседневность","приключение","реализм","романтика","ужас","экшн","юмор"]},
       {title: "Лёгкие фетиши", items: ["анал","бимбо","гарем","ддлг","игрушки","измена","классика","кремпай","куни","милфы","минет","обилие_жидкостей","пайзури","приятные_запахи","толстушки","футфетиш","черные"]},
@@ -267,17 +228,17 @@
       const about = document.getElementById('about').value.trim();
       if (about) text += `\nО себе:\n${about}\n\n`;
 
-      // Кого ищу (позиция)
+      // === Кого ищу (новый формат) ===
       const seekRole = document.querySelector('input[name="seek_role"]:checked');
-      let seekText = '';
-      if (seekRole) seekText = `#Ищу_${seekRole.value} `;
-
       const search = document.getElementById('search').value.trim();
-      if (seekRole || search) {
-        text += `Кого ищу: ${seekText}${search ? search : ''}\n\n`;
-      }
 
-      if (document.getElementById('search_gm').checked) text += `#Ищу_ГМ\n\n`;
+      text += `Кого ищу:\n`;
+      if (search) text += `${search}\n`;
+
+      if (seekRole) text += `#Ищу_${seekRole.value}\n`;
+      if (document.getElementById('search_gm').checked) text += `#Ищу_ГМ\n`;
+
+      text += `\n`;
 
       const selected = Array.from(document.querySelectorAll('#fetishes input:checked')).map(cb => '#' + cb.value.replace(/\s+/g, '_'));
       if (selected.length) text += `Фетиши: ${selected.join(' ')}\n`;
@@ -309,56 +270,8 @@
       document.getElementById('successModal').classList.add('hidden');
     }
 
-    // Сохранение при изменении
-    function autoSave() {
-      saveFormData();
-    }
-
-    function saveFormData() {
-      const data = {
-        gender: document.querySelector('input[name="gender"]:checked')?.value,
-        role: document.querySelector('input[name="role"]:checked')?.value,
-        style: document.querySelector('input[name="style"]:checked')?.value,
-        gm: document.getElementById('gm').checked,
-        volume_pc: document.getElementById('volume_pc').value,
-        volume_phone: document.getElementById('volume_phone').value,
-        about: document.getElementById('about').value,
-        seek_role: document.querySelector('input[name="seek_role"]:checked')?.value,
-        search: document.getElementById('search').value,
-        search_gm: document.getElementById('search_gm').checked,
-        tabu: document.getElementById('tabu').value,
-        adult: document.getElementById('adult').checked
-      };
-      localStorage.setItem('phantasmFormData', JSON.stringify(data));
-    }
-
-    function loadFormData() {
-      const saved = localStorage.getItem('phantasmFormData');
-      if (!saved) return;
-      const data = JSON.parse(saved);
-
-      if (data.gender) document.querySelector(`input[name="gender"][value="${data.gender}"]`)?.setAttribute('checked', true);
-      if (data.role) document.querySelector(`input[name="role"][value="${data.role}"]`)?.setAttribute('checked', true);
-      if (data.style) document.querySelector(`input[name="style"][value="${data.style}"]`)?.setAttribute('checked', true);
-      if (data.gm !== undefined) document.getElementById('gm').checked = data.gm;
-      if (data.volume_pc) document.getElementById('volume_pc').value = data.volume_pc;
-      if (data.volume_phone) document.getElementById('volume_phone').value = data.volume_phone;
-      if (data.about) document.getElementById('about').value = data.about;
-      if (data.seek_role) document.querySelector(`input[name="seek_role"][value="${data.seek_role}"]`)?.setAttribute('checked', true);
-      if (data.search) document.getElementById('search').value = data.search;
-      if (data.search_gm !== undefined) document.getElementById('search_gm').checked = data.search_gm;
-      if (data.tabu) document.getElementById('tabu').value = data.tabu;
-      if (data.adult !== undefined) document.getElementById('adult').checked = data.adult;
-    }
-
     window.onload = () => {
       renderFetishes();
-      loadFormData();
-      // Автосохранение при любых изменениях
-      document.querySelectorAll('input, select, textarea').forEach(el => {
-        el.addEventListener('change', autoSave);
-        el.addEventListener('input', autoSave);
-      });
     };
   </script>
 </body>
