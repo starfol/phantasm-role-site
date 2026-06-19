@@ -130,6 +130,7 @@
       <!-- Кого ищу -->
       <div class="mb-10">
         <h2 class="text-2xl font-semibold mb-6">Кого ищу</h2>
+        
         <div class="mb-6">
           <p class="text-pink-300 mb-3">Позиция партнёра</p>
           <div class="grid grid-cols-3 gap-4">
@@ -224,32 +225,34 @@
     function generatePostText() {
       let text = 'Автор объявления достиг совершеннолетия\n\n';
 
+      // === Хештеги для выбранных параметров ===
       const gender = document.querySelector('input[name="gender"]:checked');
-      if (gender) text += `Пол: ${gender.value}\n`;
+      if (gender) text += `#${gender.value}\n`;
 
       const role = document.querySelector('input[name="role"]:checked');
-      if (role) text += `Позиция: ${role.value}\n`;
+      if (role) text += `#${role.value}\n`;
 
       const style = document.querySelector('input[name="style"]:checked');
-      if (style) text += `Стиль: ${style.value}\n`;
+      if (style) text += `#${style.value.replace(' ', '_')}\n`;
 
-      if (document.getElementById('gm').checked) text += `Играю ГМ\n`;
+      if (document.getElementById('gm').checked) text += `#ГМ\n`;
 
       const pc = document.getElementById('volume_pc').value;
+      if (pc) text += `#${pc.replace(/ /g, '_')}\n`;
+
       const phone = document.getElementById('volume_phone').value;
-      if (pc) text += `Объём ПК: ${pc}\n`;
-      if (phone) text += `Объём телефон: ${phone}\n`;
+      if (phone) text += `#${phone.replace(/ /g, '_')}\n`;
 
       const about = document.getElementById('about').value.trim();
       if (about) text += `\nО себе:\n${about}\n\n`;
 
       const seekRole = document.querySelector('input[name="seek_role"]:checked');
-      if (seekRole) text += `Кого ищу (позиция): ${seekRole.value}\n\n`;
+      if (seekRole) text += `#Ищу_${seekRole.value}\n\n`;
 
       const search = document.getElementById('search').value.trim();
       if (search) text += `Кого ищу:\n${search}\n\n`;
 
-      if (document.getElementById('search_gm').checked) text += `Ищу ГМ\n\n`;
+      if (document.getElementById('search_gm').checked) text += `#Ищу_ГМ\n\n`;
 
       const selected = Array.from(document.querySelectorAll('#fetishes input:checked')).map(cb => '#' + cb.value.replace(/\s+/g, '_'));
       if (selected.length) text += `Фетиши: ${selected.join(' ')}\n`;
