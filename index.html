@@ -178,7 +178,7 @@
     </div>
   </div>
 
-  <!-- Модалка успеха -->
+  <!-- Модалка -->
   <div id="successModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
     <div class="glass rounded-3xl p-10 max-w-md w-full text-center">
       <div class="text-6xl mb-6">✅</div>
@@ -273,11 +273,13 @@
 
       const text = generatePostText();
       
+      // Копируем в буфер
       navigator.clipboard.writeText(text).then(() => {
+        // Показываем модалку
         document.getElementById('copiedText').textContent = text;
         document.getElementById('successModal').classList.remove('hidden');
       }).catch(() => {
-        alert('Не удалось скопировать. Попробуй в Chrome.');
+        alert('Не удалось скопировать текст. Попробуй в Chrome.');
       });
     }
 
