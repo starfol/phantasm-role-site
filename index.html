@@ -205,42 +205,47 @@
       });
     }
 
+    function addTag(str) {
+      return '#' + str.replace(/\s+/g, '_') + '@fgm_34';
+    }
+
     function generatePostText() {
       let text = 'Автор объявления достиг совершеннолетия\n\n';
 
       const gender = document.querySelector('input[name="gender"]:checked');
-      if (gender) text += `Пол: #${gender.value}\n`;
+      if (gender) text += `Пол: ${addTag(gender.value)}\n`;
 
       const role = document.querySelector('input[name="role"]:checked');
-      if (role) text += `Позиция в сюжетах: #${role.value}\n`;
+      if (role) text += `Позиция в сюжетах: ${addTag(role.value)}\n`;
 
       const style = document.querySelector('input[name="style"]:checked');
-      if (style) text += `Стиль игры: #${style.value.replace(' ', '_')}\n`;
+      if (style) text += `Стиль игры: ${addTag(style.value)}\n`;
 
-      if (document.getElementById('gm').checked) text += `Ролю как: #ГМ\n`;
+      if (document.getElementById('gm').checked) text += `Ролю как: ${addTag('ГМ')}\n`;
 
       const pc = document.getElementById('volume_pc').value;
-      if (pc) text += `Объём постов (ПК): #${pc.replace(/ /g, '_')}\n`;
+      if (pc) text += `Объём постов (ПК): ${addTag(pc)}\n`;
 
       const phone = document.getElementById('volume_phone').value;
-      if (phone) text += `Объём постов (телефон): #${phone.replace(/ /g, '_')}\n`;
+      if (phone) text += `Объём постов (телефон): ${addTag(phone)}\n`;
 
       const about = document.getElementById('about').value.trim();
       if (about) text += `\nО себе:\n${about}\n\n`;
 
-      // === Кого ищу (новый формат) ===
+      // Кого ищу
       const seekRole = document.querySelector('input[name="seek_role"]:checked');
       const search = document.getElementById('search').value.trim();
 
       text += `Кого ищу:\n`;
       if (search) text += `${search}\n`;
-
-      if (seekRole) text += `#Ищу_${seekRole.value}\n`;
-      if (document.getElementById('search_gm').checked) text += `#Ищу_ГМ\n`;
+      if (seekRole) text += `${addTag('Ищу_' + seekRole.value)}\n`;
+      if (document.getElementById('search_gm').checked) text += `${addTag('Ищу_ГМ')}\n`;
 
       text += `\n`;
 
-      const selected = Array.from(document.querySelectorAll('#fetishes input:checked')).map(cb => '#' + cb.value.replace(/\s+/g, '_'));
+      const selected = Array.from(document.querySelectorAll('#fetishes input:checked')).map(cb => 
+        addTag(cb.value)
+      );
       if (selected.length) text += `Фетиши: ${selected.join(' ')}\n`;
 
       const tabu = document.getElementById('tabu').value.trim();
