@@ -12,29 +12,13 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- 18+ -->
-  <div id="ageGate" class="min-h-screen flex items-center justify-center">
-    <div class="text-center max-w-md px-6">
-      <h1 class="text-6xl font-bold mb-6 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-        PHANTASM ROLE
-      </h1>
-      <p class="text-2xl mb-12 text-pink-200">Тёмный мир ролевых фантазий</p>
-
-      <div onclick="confirmAge()" class="glass rounded-3xl p-12 cursor-pointer hover:scale-105 transition-transform border border-pink-500">
-        <div class="text-7xl mb-6">🔞</div>
-        <h2 class="text-3xl font-bold mb-4">Мне исполнилось 18 лет</h2>
-        <p class="text-pink-300">Я понимаю, что здесь будет NSFW-контент</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Основная форма -->
-  <div id="mainForm" class="hidden max-w-2xl mx-auto py-10 px-6">
+  <!-- Основная форма (сразу открывается) -->
+  <div class="max-w-2xl mx-auto py-10 px-6">
     <div class="glass rounded-3xl p-10">
 
       <h1 class="text-4xl font-bold text-center mb-10">Создать анкету</h1>
 
-      <!-- Чекбокс 18+ -->
+      <!-- Чекбокс 18+ внутри формы -->
       <div class="mb-8 bg-red-900/30 border border-red-500/50 p-5 rounded-3xl">
         <label class="flex items-center gap-3 cursor-pointer">
           <input type="checkbox" id="adult" class="w-6 h-6 accent-pink-600">
@@ -225,34 +209,33 @@
     function generatePostText() {
       let text = 'Автор объявления достиг совершеннолетия\n\n';
 
-      // === Хештеги для выбранных параметров ===
       const gender = document.querySelector('input[name="gender"]:checked');
-      if (gender) text += `#${gender.value}\n`;
+      if (gender) text += `Пол: #${gender.value}\n`;
 
       const role = document.querySelector('input[name="role"]:checked');
-      if (role) text += `#${role.value}\n`;
+      if (role) text += `Позиция в сюжетах: #${role.value}\n`;
 
       const style = document.querySelector('input[name="style"]:checked');
-      if (style) text += `#${style.value.replace(' ', '_')}\n`;
+      if (style) text += `Стиль игры: #${style.value.replace(' ', '_')}\n`;
 
-      if (document.getElementById('gm').checked) text += `#ГМ\n`;
+      if (document.getElementById('gm').checked) text += `Ролю как: #ГМ\n`;
 
       const pc = document.getElementById('volume_pc').value;
-      if (pc) text += `#${pc.replace(/ /g, '_')}\n`;
+      if (pc) text += `Объём постов (ПК): #${pc.replace(/ /g, '_')}\n`;
 
       const phone = document.getElementById('volume_phone').value;
-      if (phone) text += `#${phone.replace(/ /g, '_')}\n`;
+      if (phone) text += `Объём постов (телефон): #${phone.replace(/ /g, '_')}\n`;
 
       const about = document.getElementById('about').value.trim();
       if (about) text += `\nО себе:\n${about}\n\n`;
 
       const seekRole = document.querySelector('input[name="seek_role"]:checked');
-      if (seekRole) text += `#Ищу_${seekRole.value}\n\n`;
+      if (seekRole) text += `Кого ищу (позиция): #${seekRole.value}\n\n`;
 
       const search = document.getElementById('search').value.trim();
       if (search) text += `Кого ищу:\n${search}\n\n`;
 
-      if (document.getElementById('search_gm').checked) text += `#Ищу_ГМ\n\n`;
+      if (document.getElementById('search_gm').checked) text += `Ищу ГМ\n\n`;
 
       const selected = Array.from(document.querySelectorAll('#fetishes input:checked')).map(cb => '#' + cb.value.replace(/\s+/g, '_'));
       if (selected.length) text += `Фетиши: ${selected.join(' ')}\n`;
@@ -286,13 +269,10 @@
       document.getElementById('successModal').classList.add('hidden');
     }
 
-    function confirmAge() {
-      document.getElementById('ageGate').classList.add('hidden');
-      document.getElementById('mainForm').classList.remove('hidden');
+    // Сразу показываем форму
+    window.onload = () => {
       renderFetishes();
-    }
-
-    window.onload = () => {};
+    };
   </script>
 </body>
 </html>
